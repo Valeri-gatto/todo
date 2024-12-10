@@ -4,12 +4,10 @@
 
 	let {
 		items,
-		toggleDone,
-		removeTask
+		toggleDone
 	}: {
 		items: Items[];
 		toggleDone: (task: Items) => void;
-		removeTask: (id: string) => void;
 	} = $props();
 </script>
 
@@ -19,7 +17,10 @@
 			<input checked={task.done} onchange={() => toggleDone(task)} type="checkbox" />
 			<span class:done={task.done}>{task.text}</span>
 		</label>
-		<button class="remove-button" onclick={() => removeTask(task.id)}>Remove</button>
+		<form method="POST" action="?/removeTask">
+			<input type="hidden" name="taskId" value={task.id} />
+			<button class="remove-button">Remove</button>
+		</form>
 	</section>
 {/each}
 

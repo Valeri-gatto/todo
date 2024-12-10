@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { v4 as uuid } from 'uuid';
 	import Form from '../lib/components/Form.svelte';
 	import TasksList from '../lib/components/TasksList.svelte';
 	import type { Filter, Items } from '$lib/Types';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-	let items = data.items;
+	let items = $state(data.items);
 
 	let currentFilter = $state<Filter>('all');
 	let totalDone = $derived(items.reduce((total, item) => total + Number(item.done), 0));
@@ -24,22 +23,12 @@
 		}
 	});
 
-	function addTask(newTask: string) {
-		items.push({
-			id: uuid(),
-			// можно сделать id через: crypto.randomUUID();
-			text: newTask,
-			done: false
-		});
-	}
-
-	function removeTask(id: string) {
-		const index = items.findIndex((t) => t.id === id);
-		items.splice(index, 1);
-	}
-
 	function toggleDone(task: Items) {
 		task.done = !task.done;
+		fetch('/api/setTaskState', {
+			method: 'POST',
+			body: JSON.stringify({ id: task.id, done: task.done })
+		});
 	}
 </script>
 
@@ -53,7 +42,7 @@
 
 <div class="container">
 	<main>
-		<Form {addTask} />
+		<Form />
 		<p class="text">
 			{#if items.length}
 				{totalDone} / {items.length} tasks completed
@@ -68,7 +57,7 @@
 				{@render filterButton('done')}
 			</div>
 		{/if}
-		<TasksList items={filteredTasks} {toggleDone} {removeTask} />
+		<TasksList items={filteredTasks} {toggleDone} />
 	</main>
 </div>
 

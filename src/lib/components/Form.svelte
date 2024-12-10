@@ -2,18 +2,9 @@
 	let newTask = $state('');
 	let title = 'Enter what do you want to do';
 	let buttonText = 'Add todo';
-	let { addTask }: { addTask: (newTask: string) => void } = $props();
-
-	function formSubmitted(ev: SubmitEvent) {
-		ev.preventDefault();
-		if (newTask !== '') {
-			addTask(newTask);
-			newTask = '';
-		}
-	}
 </script>
 
-<form class="main-container" onsubmit={formSubmitted} method="POST" action="?/addTask">
+<form class="main-container" method="POST" action="?/addTask">
 	<label
 		>{title}
 		<input name="newTask" class="todo-input" bind:value={newTask} type="text" />
