@@ -1,4 +1,4 @@
-import { items } from '$lib/items.server';
+import { itemsDB } from '$lib/items.server';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -11,10 +11,8 @@ export const POST: RequestHandler = async ({ request }) => {
     if (typeof taskId !== 'string' || typeof taskState !== 'boolean') {
         error(400, 'invalid data');
     }
-    const task = items.find(t => t.id === taskId);
-    if (!task) {
+    if (!itemsDB.setStatus(taskId, taskState)) {
         error(410, 'task not found');
     }
-    task.done = taskState;
     return new Response('');
 };

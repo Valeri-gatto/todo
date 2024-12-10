@@ -1,7 +1,6 @@
-import { items } from '$lib/items.server';
+import { itemsDB } from '$lib/items.server';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
-import { v4 as uuid } from 'uuid';
 
 
 export const actions = {
@@ -11,25 +10,18 @@ export const actions = {
         if (!text) {
             return
         }
-        items.push({
-            id: uuid(),
-            // можно сделать id через: crypto.randomUUID();
-            text,
-            done: false
-        });
+        itemsDB.addTask(text)
     },
     removeTask: async ({ request }) => {
         const data = await request.formData();
         const idTask = data.get("taskId")?.toString().trim();
-        const index = items.findIndex((t) => t.id === idTask);
-        if (index === -1) {
-            return
+        if (idTask) {
+            itemsDB.removeTask(idTask)
         }
-        items.splice(index, 1);
     }
 } satisfies Actions;
 
 
 export const load: PageServerLoad = async () => {
-    return { items };
+    return { items: itemsDB.getAll() };
 };
