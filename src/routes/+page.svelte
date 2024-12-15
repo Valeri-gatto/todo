@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Form from '../lib/components/Form.svelte';
 	import TasksList from '../lib/components/TasksList.svelte';
-	import type { Filter, Items } from '$lib/Types';
+	import type { Filter, Item } from '$lib/Types';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -23,7 +23,7 @@
 		}
 	});
 
-	function toggleDone(task: Items) {
+	function toggleDone(task: Item) {
 		task.done = !task.done;
 		fetch('/api/setTaskState', {
 			method: 'POST',

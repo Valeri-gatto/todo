@@ -1,60 +1,55 @@
-import type { Items } from "./Types";
-import { v4 as uuid } from 'uuid';
-import { readFileSync, writeFileSync } from 'node:fs';
+import type { Item } from "./Types";
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+import { DB_PASS, DB_USER, DB_ADDR } from '$env/static/private';
+
+const dbUri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_ADDR}/?retryWrites=true&w=majority&appName=Test`;
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(dbUri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+});
+
+const db = client.db("todo").collection<Omit<Item, "id">>("todo");
 
 
 class Database {
-    #data: Items[]
-    #fileStorage: string
     // A base class whose constructor returns the object it's given
-    constructor(fileStorage: string) {
-        this.#fileStorage = fileStorage;
-        try {
-            const data = readFileSync(this.#fileStorage, { encoding: "utf-8" })
-            this.#data = JSON.parse(data);
-        } catch {
-            this.#data = [];
-        }
-    }
-    #save() {
-        writeFileSync(this.#fileStorage, JSON.stringify(this.#data))
+    async getAll(): Promise<Item[]> {
+        const res = await db.find().toArray();
+        return res.map(todo => ({ id: todo._id.toHexString(), text: todo.text, done: todo.done }))
     }
 
-    getAll(): Items[] {
-        return this.#data
-    }
-
-    addTask(text: string): Items["id"] {
-        const id = uuid();
-        this.#data.push({
-            id,
-            // можно сделать id через: crypto.randomUUID();
+    async addTask(text: string): Promise<string> {
+        const res = await db.insertOne({
             text,
             done: false
         });
-        this.#save();
-        return id;
+        return res.insertedId.toHexString()
     }
 
-    removeTask(id: Items["id"]): boolean {
-        const index = this.#data.findIndex((t) => t.id === id);
-        if (index === -1) {
-            return false;
-        }
-        this.#data.splice(index, 1);
-        this.#save();
-        return true;
+    async removeTask(id: Item["id"]): Promise<boolean> {
+        const res = await db.deleteOne({
+            _id: ObjectId.createFromHexString(id)
+        });
+        return res.deletedCount !== 0;
     }
 
-    setStatus(id: Items["id"], done: boolean): boolean {
-        const task = this.#data.find(t => t.id === id);
-        if (!task) {
-            return false;
-        }
-        task.done = done;
-        this.#save();
-        return true;
+    async setStatus(id: Item["id"], done: boolean): Promise<boolean> {
+        const res = await db.updateOne(
+            {
+                _id: ObjectId.createFromHexString(id),
+            },
+            {
+                $set: {
+                    done,
+                }
+            }
+        )
+        return res.modifiedCount != 0;
     }
 }
 
-export const itemsDB = new Database("D:/программистка/todo/db.json");
+export const itemsDB = new Database();

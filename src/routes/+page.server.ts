@@ -10,18 +10,18 @@ export const actions = {
         if (!text) {
             return
         }
-        itemsDB.addTask(text)
+        await itemsDB.addTask(text)
     },
     removeTask: async ({ request }) => {
         const data = await request.formData();
         const idTask = data.get("taskId")?.toString().trim();
         if (idTask) {
-            itemsDB.removeTask(idTask)
+            await itemsDB.removeTask(idTask)
         }
     }
 } satisfies Actions;
 
 
 export const load: PageServerLoad = async () => {
-    return { items: itemsDB.getAll() };
+    return { items: await itemsDB.getAll() };
 };

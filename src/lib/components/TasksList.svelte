@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Items } from '$lib/Types';
+	import type { Item } from '$lib/Types';
 	import { fade } from 'svelte/transition';
 
 	let {
 		items,
 		toggleDone
 	}: {
-		items: Items[];
-		toggleDone: (task: Items) => void;
+		items: Item[];
+		toggleDone: (task: Item) => void;
 	} = $props();
 </script>
 
