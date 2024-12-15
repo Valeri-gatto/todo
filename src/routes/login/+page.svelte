@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { checkPassword } from '$lib/Types';
+
 	let username = $state('');
 	let password = $state('');
 	let repeatPassword = $state('');
 	let pageType = $state('login');
+	let checkPas = $derived(checkPassword(password));
 </script>
 
 <div class="login-container">
@@ -35,9 +38,15 @@
 					class="input"
 					bind:value={password}
 					type="password"
-					minlength="4"
+					minlength="6"
 					maxlength="15"
 				/>
+				{#if pageType === 'sign up' && !checkPas}
+					<p class="red">
+						Password must contain 6 to 15 characters, <br /> including numbers, capital letters and special
+						characters
+					</p>
+				{/if}
 			</label>
 			{#if pageType === 'sign up'}
 				<label>
@@ -47,9 +56,12 @@
 						class="input"
 						bind:value={repeatPassword}
 						type="password"
-						minlength="4"
+						minlength="6"
 						maxlength="15"
 					/>
+					{#if repeatPassword !== '' && repeatPassword !== password}
+						<p class="red">Your passwords don't match</p>
+					{/if}
 				</label>
 			{/if}
 			<input type="hidden" name="type" value={pageType} />
@@ -141,5 +153,10 @@
 		> span {
 			align-self: start;
 		}
+	}
+	.red {
+		color: red;
+		font-size: 0.8em;
+		margin: 0;
 	}
 </style>
