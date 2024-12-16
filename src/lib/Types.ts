@@ -4,6 +4,11 @@ export type Item = {
     done: boolean;
 };
 
+export type User = {
+    name: string;
+    password: string;
+}
+
 export type Filter = "all" | "todo" | "done";
 
 

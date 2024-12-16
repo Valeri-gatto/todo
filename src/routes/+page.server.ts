@@ -1,4 +1,5 @@
 import { itemsDB } from '$lib/items.server';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
@@ -18,6 +19,10 @@ export const actions = {
         if (idTask) {
             await itemsDB.removeTask(idTask)
         }
+    },
+    deleteCookies: async ({ cookies }) => {
+        cookies.delete('userID', { path: '/' });
+        redirect(302, '/login');
     }
 } satisfies Actions;
 

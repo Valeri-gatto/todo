@@ -42,6 +42,10 @@
 
 <div class="container">
 	<main>
+		<form method="POST" action="?/deleteCookies">
+			<input type="hidden" />
+			<button class="logout">Log out</button>
+		</form>
 		<Form />
 		<p class="text">
 			{#if items.length}

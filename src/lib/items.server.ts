@@ -1,4 +1,4 @@
-import type { Item } from "./Types";
+import type { Item, User } from "./Types";
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import { DB_PASS, DB_USER, DB_ADDR } from '$env/static/private';
 
@@ -13,6 +13,7 @@ const client = new MongoClient(dbUri, {
 });
 
 const db = client.db("todo").collection<Omit<Item, "id">>("todo");
+const dbUsers = client.db("todo").collection<User>("users");
 
 
 class Database {
@@ -56,15 +57,22 @@ class Database {
 
 
     // функция добавления нового пользователя
-    // и помещение его id в куку браузера
-
+    async addUser(name: User["name"], password: User["password"]): Promise<string> {
+        const res = await dbUsers.insertOne({
+            name,
+            password,
+        });
+        return res.insertedId.toHexString();
+    }
 
     // функция проверки наличия логина пользователя в базе данных
-
-
-    // функция отправления запроса в браузер на получение куки 
-
-    // функция установления куки с id пользователя
+    async findUser(name: User["name"], password: User["password"]): Promise<ObjectId | undefined> {
+        const res = await dbUsers.findOne({
+            name,
+            password
+        });
+        return res?._id;
+    }
 }
 
 export const itemsDB = new Database();
