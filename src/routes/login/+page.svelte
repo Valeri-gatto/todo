@@ -19,7 +19,7 @@
 				Sign up</button
 			>
 		</div>
-		<form method="POST" action="?/addUserLogin">
+		<form method="POST" action="?/login">
 			<label>
 				<span>Username:</span>
 				<input
@@ -43,8 +43,7 @@
 				/>
 				{#if pageType === 'sign up' && !checkPas}
 					<p class="red">
-						Password must contain 6 to 15 characters, <br /> including numbers, capital letters and special
-						characters
+						Password must contain 6 to 15 characters, <br /> including numbers and capital letters
 					</p>
 				{/if}
 			</label>
@@ -133,8 +132,8 @@
 		gap: 0.5em;
 	}
 	input {
-		font-size: 1.2em;
-		padding: 0.4em;
+		font-size: 1.1em;
+		padding: 0.3em;
 	}
 	.login-button {
 		background-color: royalblue;

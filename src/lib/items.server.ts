@@ -16,11 +16,11 @@ const db = client.db("todo").collection<Omit<Item, "id">>("todo");
 
 
 class Database {
-    // A base class whose constructor returns the object it's given
     async getAll(): Promise<Item[]> {
         const res = await db.find().toArray();
         return res.map(todo => ({ id: todo._id.toHexString(), text: todo.text, done: todo.done }))
     }
+    // добавить фильтр по id пользователя
 
     async addTask(text: string): Promise<string> {
         const res = await db.insertOne({
@@ -29,6 +29,7 @@ class Database {
         });
         return res.insertedId.toHexString()
     }
+    // добавить фильтр по id пользователя
 
     async removeTask(id: Item["id"]): Promise<boolean> {
         const res = await db.deleteOne({
@@ -36,6 +37,7 @@ class Database {
         });
         return res.deletedCount !== 0;
     }
+    // добавить фильтр по id пользователя
 
     async setStatus(id: Item["id"], done: boolean): Promise<boolean> {
         const res = await db.updateOne(
@@ -50,6 +52,19 @@ class Database {
         )
         return res.modifiedCount != 0;
     }
+    // добавить фильтр по id пользователя
+
+
+    // функция добавления нового пользователя
+    // и помещение его id в куку браузера
+
+
+    // функция проверки наличия логина пользователя в базе данных
+
+
+    // функция отправления запроса в браузер на получение куки 
+
+    // функция установления куки с id пользователя
 }
 
 export const itemsDB = new Database();
