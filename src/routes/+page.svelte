@@ -42,9 +42,9 @@
 
 <div class="container">
 	<main>
-		<form method="POST" action="?/deleteCookies">
+		<form class="menu" method="POST" action="?/deleteCookies">
 			<input type="hidden" />
-			<button class="logout">Log out</button>
+			<button class="logout">Log out </button>
 		</form>
 		<Form />
 		<p class="text">
@@ -66,6 +66,26 @@
 </div>
 
 <style>
+	.menu {
+		display: flex;
+		justify-content: end;
+	}
+	.logout {
+		position: relative;
+		padding-right: 40px;
+		margin-bottom: 1em;
+		background-color: white;
+		text-shadow: 1px 1px gainsboro;
+	}
+	.logout::after {
+		content: '';
+		position: absolute;
+		right: 10px;
+		top: calc(50% - 10px);
+		background-image: url('../lib/components/Logout.svg');
+		width: 20px;
+		aspect-ratio: 1;
+	}
 	.container {
 		min-height: 100vh;
 		place-items: center;
