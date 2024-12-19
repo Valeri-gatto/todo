@@ -12,19 +12,21 @@ const client = new MongoClient(dbUri, {
     }
 });
 
-const db = client.db("todo").collection<Omit<Item, "id">>("todo");
+const db = client.db("todo").collection<Omit<Item, "id" | "user_id"> & {
+    user_id: ObjectId
+}>("todo");
 const dbUsers = client.db("todo").collection<User>("users");
 
 
 class Database {
-    async getAll(user_id: string): Promise<Item[]> {
+    async getAll(user_id: ObjectId): Promise<Item[]> {
         const res = await db.find({
             user_id,
         }).toArray();
-        return res.map(todo => ({ user_id: todo.user_id, id: todo._id.toHexString(), text: todo.text, done: todo.done }))
+        return res.map(todo => ({ user_id: todo.user_id.toHexString(), id: todo._id.toHexString(), text: todo.text, done: todo.done }))
     }
 
-    async addTask(text: string, user_id: string): Promise<string> {
+    async addTask(text: string, user_id: ObjectId): Promise<string> {
         const res = await db.insertOne({
             user_id,
             text,
@@ -33,7 +35,7 @@ class Database {
         return res.insertedId.toHexString()
     }
 
-    async removeTask(id: Item["id"], user_id: string): Promise<boolean> {
+    async removeTask(id: Item["id"], user_id: ObjectId): Promise<boolean> {
         const res = await db.deleteOne({
             user_id,
             _id: ObjectId.createFromHexString(id)
@@ -41,7 +43,7 @@ class Database {
         return res.deletedCount !== 0;
     }
 
-    async setStatus(id: Item["id"], user_id: string, done: boolean): Promise<boolean> {
+    async setStatus(id: Item["id"], user_id: ObjectId, done: boolean): Promise<boolean> {
         const res = await db.updateOne(
             {
                 _id: ObjectId.createFromHexString(id),

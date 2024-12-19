@@ -1,3 +1,11 @@
+import type { ObjectId } from "mongodb";
+
+type Modify<T, R> = Omit<T, keyof R> & R;
+
+
+export type DB_Item = Modify<Item, {
+    user_id: ObjectId
+}>
 
 export type Item = {
     user_id: string;
