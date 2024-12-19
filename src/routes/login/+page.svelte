@@ -1,11 +1,30 @@
 <script lang="ts">
 	import { checkPassword } from '$lib/Types';
-
+	import type { ActionData } from './$types';
+	let { form }: { form: ActionData } = $props();
 	let username = $state('');
 	let password = $state('');
 	let repeatPassword = $state('');
-	let pageType = $state('login');
-	let checkPas = $derived(checkPassword(password));
+	let pageType = $state(form?.pageType || 'login');
+	let submitError = form?.error;
+	let checkPas = $derived.by(() => {
+		let errors: string[] = [];
+		if (pageType === 'sign up') {
+			if (password.length !== 0) {
+				errors = checkPassword(password);
+			}
+			if (repeatPassword !== '' && repeatPassword !== password) {
+				errors.push("Your passwords don't match");
+			}
+		} else {
+			errors = [];
+		}
+		if (submitError) {
+			errors.push(submitError);
+			submitError = undefined;
+		}
+		return errors;
+	});
 </script>
 
 <div class="login-container">
@@ -41,11 +60,6 @@
 					minlength="6"
 					maxlength="15"
 				/>
-				{#if pageType === 'sign up' && !checkPas}
-					<p class="red">
-						Password must contain 6 to 15 characters, <br /> including numbers and capital letters
-					</p>
-				{/if}
 			</label>
 			{#if pageType === 'sign up'}
 				<label>
@@ -58,13 +72,15 @@
 						minlength="6"
 						maxlength="15"
 					/>
-					{#if repeatPassword !== '' && repeatPassword !== password}
-						<p class="red">Your passwords don't match</p>
-					{/if}
 				</label>
 			{/if}
+			<ul class="red">
+				{#each checkPas as err}
+					<li>{err}</li>
+				{/each}
+			</ul>
 			<input type="hidden" name="type" value={pageType} />
-			<button class="login-button">{pageType}</button>
+			<button class="login-button" disabled={checkPas.length !== 0}>{pageType}</button>
 		</form>
 	</div>
 </div>
@@ -146,6 +162,10 @@
 	.login-button:hover {
 		background-color: rgb(30, 47, 101);
 	}
+	.login-button:disabled {
+		background-color: gainsboro;
+		color: black;
+	}
 	label {
 		display: flex;
 		flex-direction: column;
@@ -157,5 +177,8 @@
 		color: red;
 		font-size: 0.8em;
 		margin: 0;
+		li {
+			list-style: none;
+		}
 	}
 </style>

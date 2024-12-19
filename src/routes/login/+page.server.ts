@@ -1,6 +1,6 @@
 import { itemsDB } from '$lib/items.server.js';
 import { checkPassword } from '$lib/Types.js';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 
 export const actions = {
     login: async ({ request, cookies }) => {
@@ -11,28 +11,34 @@ export const actions = {
         const pageType = data.get("type")?.toString().trim();
 
         // в обоих случаях проверяем наличие пароля и соответствие его условиям
-        if (!userName || !password || password === '' || checkPassword(password)) {
-            return fail(400, { error: 'Put your name and password' })
+        if (!userName || !password) {
+            return fail(400, { error: 'Empty username or password', pageType })
         }
-
 
         if (pageType === 'login') {
             // проверить наличие логина в базе данных
             const userId = await itemsDB.findUser(userName, password);
             if (!userId) {
-                return fail(400, { error: 'Invalid login or password' })
+                return fail(400, { error: 'Invalid login or password', pageType })
             }
+            cookies.set('userID', userId, { path: '/' });
             redirect(302, '/');
         } else {
+            if (checkPassword(password).length !== 0) {
+                return fail(400, { error: 'Invalid login or password', pageType });
+            }
             // проверяем, что второй пароль совпал с первым
             if (repeatPassword !== password) {
-                return fail(400, { error: 'Invalid login or password' })
+                return fail(400, { error: 'Invalid login or password', pageType })
             }
             // добавляем пользователя
             const userId = await itemsDB.addUser(userName, password);
+            if (!userId) {
+                return fail(400, { error: 'Username already taken', pageType })
+            }
             // установить куку в браузере
             cookies.set('userID', userId, { path: '/' });
             redirect(302, '/');
         }
     }
-}
+} satisfies Actions;

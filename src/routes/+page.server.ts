@@ -3,21 +3,20 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
-
 export const actions = {
-    addTask: async ({ request }) => {
+    addTask: async ({ request, locals }) => {
         const data = await request.formData();
         const text = data.get("newTask")?.toString().trim();
-        if (!text) {
+        if (!text || !locals.userId) {
             return
         }
-        await itemsDB.addTask(text)
+        await itemsDB.addTask(text, locals.userId);
     },
-    removeTask: async ({ request }) => {
+    removeTask: async ({ request, locals }) => {
         const data = await request.formData();
         const idTask = data.get("taskId")?.toString().trim();
-        if (idTask) {
-            await itemsDB.removeTask(idTask)
+        if (idTask && locals.userId) {
+            await itemsDB.removeTask(idTask, locals.userId)
         }
     },
     deleteCookies: async ({ cookies }) => {
@@ -27,10 +26,10 @@ export const actions = {
 } satisfies Actions;
 
 
-export const load: PageServerLoad = async () => {
-    return { items: await itemsDB.getAll() };
+export const load: PageServerLoad = async ({ locals }) => {
+    if (locals.userId) {
+        return { items: await itemsDB.getAll(locals.userId) };
+    } else {
+        redirect(302, '/login');
+    }
 };
-
-// до получения всего проверить наличие куки (функция бд). Если нет - редирект на логин + отобразить ошибку
-// если есть - редирект на главную страницу с фильтром по задачам конкретного пользователя.
-// запрос в бд для их получения

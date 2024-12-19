@@ -1,5 +1,5 @@
 import type { Item, User } from "./Types";
-import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+import { MongoClient, MongoServerError, ObjectId, ServerApiVersion } from 'mongodb';
 import { DB_PASS, DB_USER, DB_ADDR } from '$env/static/private';
 
 const dbUri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_ADDR}/?retryWrites=true&w=majority&appName=Test`;
@@ -17,33 +17,35 @@ const dbUsers = client.db("todo").collection<User>("users");
 
 
 class Database {
-    async getAll(): Promise<Item[]> {
-        const res = await db.find().toArray();
-        return res.map(todo => ({ id: todo._id.toHexString(), text: todo.text, done: todo.done }))
+    async getAll(user_id: string): Promise<Item[]> {
+        const res = await db.find({
+            user_id,
+        }).toArray();
+        return res.map(todo => ({ user_id: todo.user_id, id: todo._id.toHexString(), text: todo.text, done: todo.done }))
     }
-    // добавить фильтр по id пользователя
 
-    async addTask(text: string): Promise<string> {
+    async addTask(text: string, user_id: string): Promise<string> {
         const res = await db.insertOne({
+            user_id,
             text,
             done: false
         });
         return res.insertedId.toHexString()
     }
-    // добавить фильтр по id пользователя
 
-    async removeTask(id: Item["id"]): Promise<boolean> {
+    async removeTask(id: Item["id"], user_id: string): Promise<boolean> {
         const res = await db.deleteOne({
+            user_id,
             _id: ObjectId.createFromHexString(id)
         });
         return res.deletedCount !== 0;
     }
-    // добавить фильтр по id пользователя
 
-    async setStatus(id: Item["id"], done: boolean): Promise<boolean> {
+    async setStatus(id: Item["id"], user_id: string, done: boolean): Promise<boolean> {
         const res = await db.updateOne(
             {
                 _id: ObjectId.createFromHexString(id),
+                user_id,
             },
             {
                 $set: {
@@ -53,25 +55,33 @@ class Database {
         )
         return res.modifiedCount != 0;
     }
-    // добавить фильтр по id пользователя
-
 
     // функция добавления нового пользователя
-    async addUser(name: User["name"], password: User["password"]): Promise<string> {
-        const res = await dbUsers.insertOne({
-            name,
-            password,
-        });
-        return res.insertedId.toHexString();
+    async addUser(name: User["name"], password: User["password"]): Promise<string | undefined> {
+        try {
+            const res = await dbUsers.insertOne({
+                name,
+                password,
+            })
+            return res.insertedId.toHexString();
+        }
+        catch (err) {
+            if (err instanceof MongoServerError && err.code === 11000) {
+                return undefined;
+            } else {
+                throw err;
+            }
+
+        }
     }
 
     // функция проверки наличия логина пользователя в базе данных
-    async findUser(name: User["name"], password: User["password"]): Promise<ObjectId | undefined> {
+    async findUser(name: User["name"], password: User["password"]): Promise<string | undefined> {
         const res = await dbUsers.findOne({
             name,
             password
         });
-        return res?._id;
+        return res?._id.toHexString();
     }
 }
 
