@@ -1,6 +1,15 @@
 import type { Item, User } from "./Types";
 import { MongoClient, MongoServerError, ObjectId, ServerApiVersion } from 'mongodb';
-import { DB_PASS, DB_USER, DB_ADDR } from '$env/static/private';
+import { DB_PASS, DB_USER, DB_ADDR, PASSWORD_PEPPER } from '$env/static/private';
+import { hash, verify, type Options } from "@node-rs/argon2"
+const hashOptions: Options = {
+    memoryCost: 12288,
+    timeCost: 3,
+    parallelism: 1,
+    algorithm: 2,
+    version: 1,
+    secret: Buffer.from(PASSWORD_PEPPER, "hex")
+}
 
 const dbUri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_ADDR}/?retryWrites=true&w=majority&appName=Test`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -63,7 +72,7 @@ class Database {
         try {
             const res = await dbUsers.insertOne({
                 name,
-                password,
+                password: await hash(password, hashOptions),
             })
             return res.insertedId.toHexString();
         }
@@ -80,9 +89,14 @@ class Database {
     // функция проверки наличия логина пользователя в базе данных
     async findUser(name: User["name"], password: User["password"]): Promise<string | undefined> {
         const res = await dbUsers.findOne({
-            name,
-            password
+            name
         });
+        if (!res) {
+            return undefined;
+        }
+        if (!await verify(res.password, password, hashOptions)) {
+            return undefined;
+        }
         return res?._id.toHexString();
     }
 }
