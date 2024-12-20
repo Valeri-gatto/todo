@@ -2,6 +2,7 @@ import { itemsDB } from '$lib/items.server';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
+import { COOKIE_PARAMS, SESSION_COOKIE_NAME } from '$lib/jwt';
 
 export const actions = {
     addTask: async ({ request, locals }) => {
@@ -20,7 +21,7 @@ export const actions = {
         }
     },
     deleteCookies: async ({ cookies }) => {
-        cookies.delete('userID', { path: '/' });
+        cookies.delete(SESSION_COOKIE_NAME, { path: COOKIE_PARAMS.path });
         redirect(302, '/login');
     }
 } satisfies Actions;
