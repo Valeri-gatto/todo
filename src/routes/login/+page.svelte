@@ -49,6 +49,7 @@
 					type="text"
 					minlength="4"
 					maxlength="15"
+					autocomplete="on"
 				/>
 			</label>
 			<label>
@@ -60,6 +61,7 @@
 					type="password"
 					minlength="6"
 					maxlength="15"
+					autocomplete="on"
 				/>
 			</label>
 			{#if pageType === 'sign up'}
@@ -72,6 +74,7 @@
 						type="password"
 						minlength="6"
 						maxlength="15"
+						autocomplete="on"
 					/>
 				</label>
 			{/if}
@@ -107,11 +110,12 @@
 	.login-content {
 		min-height: 50vh;
 		min-width: 30vw;
-		background-color: white;
+		max-width: 90vw;
+		background-color: oklch(95.1% 0.026 236.824);
 		padding: 1.5em;
 		border-radius: 8px;
 		outline: 4mm ridge royalblue;
-		box-shadow: 30px 35px 35px royalblue;
+		box-shadow: 30px 30px 30px royalblue;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -123,15 +127,17 @@
 	}
 	.button-container {
 		display: flex;
-		gap: 0.3em;
+		justify-content: center;
+		gap: 0.5em;
 		width: 100%;
 
 		> button {
-			flex-basis: 50%;
+			flex-basis: 35%;
 			padding-block: 0.5em;
 			border-radius: 5px;
 			border: none;
 			font-size: 1.1em;
+			box-shadow: 1px 1px 5px royalblue;
 		}
 	}
 	.button-container > button:hover {
@@ -150,12 +156,17 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: start;
-		gap: 0.5em;
+		gap: 0.7em;
 	}
 	input {
 		font-size: 1.1em;
 		padding: 0.3em;
 	}
+	input:focus {
+		border-radius: 0;
+		outline: 3px solid royalblue;
+	}
+
 	.login-button {
 		background-color: royalblue;
 		color: white;
@@ -174,6 +185,9 @@
 	label {
 		display: flex;
 		flex-direction: column;
+		gap: 0.5em;
+		font-size: 1em;
+
 		> span {
 			align-self: start;
 		}
@@ -182,6 +196,7 @@
 		color: red;
 		font-size: 0.8em;
 		margin: 0;
+		padding: 0;
 		li {
 			list-style: none;
 		}

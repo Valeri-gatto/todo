@@ -6,7 +6,6 @@
 
 	let { data }: { data: PageData } = $props();
 	let items = $state(data.items);
-
 	let currentFilter = $state<Filter>('all');
 	let totalDone = $derived(items.reduce((total, item) => total + Number(item.done), 0));
 	let filteredTasks = $derived.by(() => {
@@ -66,16 +65,34 @@
 </div>
 
 <style>
+	.container {
+		min-height: 100vh;
+		place-items: center;
+		margin: 0 auto;
+		text-align: center;
+		background-color: lightskyblue;
+		background-image: url('../lib/components/bg.svg');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+	main {
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+	}
 	.menu {
 		display: flex;
 		justify-content: end;
 	}
 	.logout {
 		position: relative;
-		padding-right: 40px;
+		padding-right: 2.5em;
 		margin-bottom: 1em;
-		background-color: white;
-		text-shadow: 1px 1px gainsboro;
+		background-color: oklch(50% 0.134 242.749);
+		text-shadow: 1px 1px black;
+		color: white;
 	}
 	.logout::after {
 		content: '';
@@ -83,29 +100,20 @@
 		right: 10px;
 		top: calc(50% - 10px);
 		background-image: url('../lib/components/Logout.svg');
-		width: 20px;
+		background-position: center;
+		width: 1.2em;
 		aspect-ratio: 1;
 	}
-	.container {
-		min-height: 100vh;
-		place-items: center;
-		margin: 0 auto;
-		text-align: center;
-	}
-	main {
-		padding: 2rem;
-		max-width: 1280px;
-		min-width: 320px;
-	}
 	.text {
+		margin-block: 0;
 		text-shadow: 1px 1px gainsboro;
 		font-style: italic;
+		font-weight: 600;
 	}
 	.button-container {
 		display: flex;
 		justify-content: start;
 		gap: 0.5em;
-		margin-bottom: 1em;
 	}
 	.secondary {
 		border: 3px double darkslateblue;
@@ -113,7 +121,7 @@
 	}
 	.secondary:active,
 	.secondary:focus {
-		outline: 2px auto black;
+		outline: 2px auto oklch(39.1% 0.09 240.876);
 	}
 	.contrast {
 		background-color: rgba(211, 211, 211, 1);
@@ -123,23 +131,23 @@
 	}
 	:global(button) {
 		border-radius: 8px;
-		border: 2px solid transparent;
-		padding: 0.5em 1.2em;
-		font-size: 1em;
+		outline: 1px solid oklch(39.1% 0.09 240.876);
+		padding: 0.5em 1em;
 		font-weight: 500;
+		font-size: inherit;
 		font-family: inherit;
-		background-color: #1a1a1a;
+		background-color: inherit;
 		cursor: pointer;
-		transition: border-color 0.25s;
+		transition: outline-width 0.15s ease-in-out;
 	}
 
 	:global(button):hover {
-		border-color: #646cff;
+		outline-width: 3px;
 	}
 
 	:global(button):active,
 	:global(button):focus {
-		outline: 2px auto #646cff;
+		outline-width: 2px;
 	}
 	@media (prefers-color-scheme: light) {
 		:global(button) {
