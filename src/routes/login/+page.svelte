@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { checkPassword } from '$lib/Types';
 	import type { ActionData } from './$types';
+
 	let { form }: { form: ActionData } = $props();
 	let username = $state('');
 	let password = $state('');
@@ -98,6 +99,10 @@
 		min-height: 100vh;
 		margin: 0 auto;
 		text-align: center;
+		background-image: url('../../lib/components/bg.svg');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
 	}
 	.login-content {
 		min-height: 50vh;

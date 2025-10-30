@@ -5,8 +5,8 @@
 </script>
 
 <form class="main-container" method="POST" action="?/addTask">
-	<label
-		>{title}
+	<label>
+		{title}
 		<input name="newTask" class="todo-input" bind:value={newTask} type="text" />
 	</label>
 	<button>{buttonText}</button>

@@ -1,6 +1,8 @@
 import type { Item, User } from "./Types";
 import { MongoClient, MongoServerError, ObjectId, ServerApiVersion } from 'mongodb';
-import { DB_PASS, DB_USER, DB_ADDR, PASSWORD_PEPPER } from '$env/static/private';
+import { PASSWORD_PEPPER } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+
 import { hash, verify, type Options } from "@node-rs/argon2"
 const hashOptions: Options = {
     memoryCost: 12288,
@@ -11,7 +13,7 @@ const hashOptions: Options = {
     secret: Buffer.from(PASSWORD_PEPPER, "hex")
 }
 
-const dbUri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_ADDR}/?retryWrites=true&w=majority&appName=Test`;
+const dbUri = `mongodb://${env.MONGO_INITDB_ROOT_USERNAME}:${env.MONGO_INITDB_ROOT_PASSWORD}@${env.DB_ADDR}/?retryWrites=true&w=majority`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(dbUri, {
     serverApi: {

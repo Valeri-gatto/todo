@@ -1,0 +1,10 @@
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.svelte-kit
+.vscode
+node_modules
+build
+docker-compose.yml
+db.env
