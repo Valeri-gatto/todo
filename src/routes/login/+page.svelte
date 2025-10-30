@@ -102,7 +102,7 @@
 		min-height: 100vh;
 		margin: 0 auto;
 		text-align: center;
-		background-image: url('../../lib/components/bg.svg');
+		background-image: url('$lib/assets/bg.svg');
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;

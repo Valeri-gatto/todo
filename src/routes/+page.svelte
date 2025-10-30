@@ -71,7 +71,7 @@
 		margin: 0 auto;
 		text-align: center;
 		background-color: lightskyblue;
-		background-image: url('../lib/components/bg.svg');
+		background-image: url('$lib/assets/bg.svg');
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
@@ -99,7 +99,7 @@
 		position: absolute;
 		right: 10px;
 		top: calc(50% - 10px);
-		background-image: url('../lib/components/Logout.svg');
+		background-image: url('$lib/assets/Logout.svg');
 		background-position: center;
 		width: 1.2em;
 		aspect-ratio: 1;

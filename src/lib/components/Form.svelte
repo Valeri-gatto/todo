@@ -1,4 +1,5 @@
 <script lang="ts">
+	import note from '$lib/assets/note.svg';
 	let newTask = $state('');
 	let title = 'Enter what do you want to do';
 	let buttonText = 'Add todo';
@@ -8,7 +9,7 @@
 	<label>
 		<div class="title">
 			<p>{title}</p>
-			<img class="note-img" src="/src/lib/components/note.svg" alt="note" />
+			<img class="note-img" src={note} alt="note" />
 		</div>
 		<input name="newTask" class="todo-input" bind:value={newTask} type="text" />
 	</label>
