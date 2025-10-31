@@ -14,10 +14,16 @@
 <div class="items">
 	{#each items as task (task.id)}
 		<section class="todo-item-container" transition:fade={{ delay: 100, duration: 300 }}>
-			<label>
-				<input checked={task.done} onchange={() => toggleDone(task)} type="checkbox" />
-				<span class:done={task.done}>{task.text}</span>
-			</label>
+			<div class="task-inner">
+				<input
+					id={task.id}
+					name="task-content"
+					checked={task.done}
+					onchange={() => toggleDone(task)}
+					type="checkbox"
+				/>
+				<label for={task.id} class:done={task.done}>{task.text}</label>
+			</div>
 			<form method="POST" action="?/removeTask">
 				<input type="hidden" name="taskId" value={task.id} />
 				<button class="remove-button">Remove</button>
@@ -38,19 +44,21 @@
 	.todo-item-container {
 		margin-block: 5px;
 		display: flex;
-		gap: 2em;
+		gap: min(2em, 5vw);
 		justify-content: space-between;
-		height: 50px;
 		border-radius: 5px;
 		align-items: center;
-		padding-inline: 1rem;
+		padding: 0.5em 1rem;
 		background-color: oklch(95.1% 0.026 236.824);
 		border: 1px solid oklch(50% 0.134 242.749);
 		color: black;
 	}
+	.task-inner {
+		display: flex;
+		gap: min(2vw, 1em);
+	}
 	input {
 		margin: 0;
-		margin-right: 20px;
 		cursor: pointer;
 	}
 	.remove-button {
@@ -59,7 +67,9 @@
 		font-weight: bold;
 		font-size: 0.8em;
 	}
-
+	.remove-button:hover {
+		background-color: maroon;
+	}
 	.done {
 		text-decoration: line-through;
 	}

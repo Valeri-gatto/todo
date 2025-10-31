@@ -107,8 +107,8 @@
 	}
 	.text {
 		margin-block: 0;
-		color: white;
-		text-shadow: 1px 1px oklch(39.1% 0.09 240.876);
+		color: rgb(36, 31, 71);
+		text-shadow: 1px 1px white;
 		font-style: italic;
 		font-weight: 600;
 	}
@@ -132,6 +132,7 @@
 		text-transform: capitalize;
 	}
 	:global(button) {
+		line-height: 1;
 		border-radius: 8px;
 		outline: 1px solid oklch(39.1% 0.09 240.876);
 		padding: 0.5em 1em;
