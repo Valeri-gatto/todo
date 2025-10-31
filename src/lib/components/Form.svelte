@@ -29,6 +29,7 @@
 		flex-direction: column;
 		gap: 0.3em;
 		justify-content: center;
+		align-items: center;
 		color: white;
 		margin-bottom: 0.5em;
 		text-shadow:

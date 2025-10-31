@@ -81,6 +81,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1em;
+		width: min(100%, 45em);
 	}
 	.menu {
 		display: flex;
@@ -106,7 +107,8 @@
 	}
 	.text {
 		margin-block: 0;
-		text-shadow: 1px 1px gainsboro;
+		color: white;
+		text-shadow: 1px 1px oklch(39.1% 0.09 240.876);
 		font-style: italic;
 		font-weight: 600;
 	}

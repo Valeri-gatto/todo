@@ -38,6 +38,7 @@
 	.todo-item-container {
 		margin-block: 5px;
 		display: flex;
+		gap: 2em;
 		justify-content: space-between;
 		height: 50px;
 		border-radius: 5px;
